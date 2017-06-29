@@ -30,8 +30,7 @@ class iris_dnn(object):
         encoder.fit(label)
         encoded_label = encoder.transform(label) # 回傳一個numpy array，裡面是0, 1, 2 ...
         # 做one hot encoding
-        one_hot_encoded_label = np_utils.to_categorical(encoded_label)
-        # 0會變成[1 0 0], 1會變成[0 1 0] ...
+        one_hot_encoded_label = np_utils.to_categorical(encoded_label) # 0會變成[1 0 0], 1會變成[0 1 0] ...
         return one_hot_encoded_label
 
     # define baseline model
@@ -50,10 +49,14 @@ class iris_dnn(object):
         kfold = KFold(n_splits=10, shuffle=True, random_state=self.seed)
 
         data, label = self.preprocessing()
-        
-        results = cross_val_score(estimator, data, label, cv=kfold)
-        print("Baseline: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
 
+        results = cross_val_score(estimator, data, label, cv=kfold)
+        # print(results)
+        print('Baseline Model 的平均正確率: %.2f%% ' % (results.mean()*100))
+        print('Baseline Model 的正確率標準差: %.2f%% ' % (results.std()*100))
+        # print("Baseline: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
+        # print(results.mean())
+        # print(results.std())
 
 
 
