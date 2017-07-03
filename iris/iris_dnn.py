@@ -7,7 +7,6 @@ from keras.utils import np_utils
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
 from sklearn.preprocessing import LabelEncoder
-# from sklearn.pipeline import Pipeline
 
 
 class iris_dnn(object):
@@ -51,15 +50,8 @@ class iris_dnn(object):
         data, label = self.preprocessing()
 
         results = cross_val_score(estimator, data, label, cv=kfold)
-        # print(results)
         print('Baseline Model 的平均正確率: %.2f%% ' % (results.mean()*100))
         print('Baseline Model 的正確率標準差: %.2f%% ' % (results.std()*100))
-        # print("Baseline: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
-        # print(results.mean())
-        # print(results.std())
-
-
-
 
 
 if __name__ == '__main__':
