@@ -6,34 +6,32 @@ from keras.wrappers.scikit_learn import KerasClassifier
 from keras.utils import np_utils
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelBinarizer
+from pprint import pprint
 
 
 class iris_dnn(object):
     def __init__(self, data_path='./data.csv'):
         self.data = pd.read_csv(data_path, header=None)
         self.seed = 7
-
-    def preprocessing(self):
         # fix random seed for reproducibility
-        # numpy.random.seed(seed)
+        np.random.seed(self.seed)
+
+    def _preprocessing(self):
         dataset = self.data.values
         data = dataset[:, 0:4]
         label = dataset[:, 4]
-        label = self.label_data_onehot_encoding(label)
+        label = self._label_data_onehot_encoding(label)
         return data, label
 
-    def label_data_onehot_encoding(self, label):
-        # 將label encode成整數
-        encoder = LabelEncoder()
+    def _label_data_onehot_encoding(self, label):
+        encoder = LabelBinarizer()
         encoder.fit(label)
-        encoded_label = encoder.transform(label) # 回傳一個numpy array，裡面是0, 1, 2 ...
-        # 做one hot encoding
-        one_hot_encoded_label = np_utils.to_categorical(encoded_label) # 0會變成[1 0 0], 1會變成[0 1 0] ...
-        return one_hot_encoded_label
+        label = encoder.transform(label)
+        return label
 
     # define baseline model
-    def baseline_model(self):
+    def _baseline_model(self):
         # create model
         model = Sequential()
         model.add(Dense(8, input_dim=4, activation='relu'))
@@ -44,12 +42,13 @@ class iris_dnn(object):
 
     def estimate_and_evaluate(self):
         # 以baseline_model函式作為model
-        estimator = KerasClassifier(build_fn=self.baseline_model, epochs=200, batch_size=5, verbose=0)
+        estimator = KerasClassifier(build_fn=self._baseline_model, epochs=200, batch_size=5, verbose=0)
         kfold = KFold(n_splits=10, shuffle=True, random_state=self.seed)
-
-        data, label = self.preprocessing()
+        
+        data, label = self._preprocessing()
 
         results = cross_val_score(estimator, data, label, cv=kfold)
+        print(results)
         print('Baseline Model 的平均正確率: %.2f%% ' % (results.mean()*100))
         print('Baseline Model 的正確率標準差: %.2f%% ' % (results.std()*100))
 

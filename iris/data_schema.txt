@@ -1,0 +1,3 @@
+Iris dataset data schema
+花萼長度	花萼寬度	花瓣長度	花瓣寬度	屬種
+5.1		3.5		1.4		0.2		Iris-setosa
